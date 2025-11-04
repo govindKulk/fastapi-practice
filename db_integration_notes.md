@@ -17,7 +17,7 @@
     - Allows for package-level initialization code.
     - allows . syntax imports within the package.
     - for allowing absolute imports from other packages, you have to mark the directory as the package mandatorily. like importing from app.core.config import settings in app.main.py will not work unless app is marked as a package with __init__.py file. and also core should be marked as a package too.
-4. If you have to use the reserved keyword as variable name, then appending an underscore (_) at the end is a common convention.
+4. If you have to use a reserved keyword as a variable name, then appending an underscore (_) at the end is a common convention.
     - Example: `class_`, `def_`, etc.
 
 ## 3. Docker Common Doubts / Notes:
@@ -33,8 +33,9 @@ docker run --name postgres-db \
   -e POSTGRES_DB=mydatabase \
   -p 5432:5432 \
   -d postgres:16
---name postgres-db: Name your container.
 ```
+
+--name postgres-db: Name your container.
 
 -e POSTGRES_USER=...: Set the database username.
 
@@ -204,18 +205,17 @@ settings = Settings()
 - Not a session itself, but produces sessions with consistent configuration
 - Example:
   ```python
-  from sqlalchemy.orm import sessionmaker
-  from sqlalchemy.ext.asyncio import AsyncSession
+  from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
   
   # Create the factory
-  async_session_maker = sessionmaker(
-      engine,
-      class_=AsyncSession,
-      expire_on_commit=False  # Don't expire objects after commit
+  AsyncSessionLocal = async_sessionmaker(
+      bind = engine,
+      class_ = AsyncSession,
+      expire_on_commit = False  # Don't expire objects after commit
   )
   
   # Later, create sessions from the factory
-  async with async_session_maker() as session:
+  async with AsyncSessionLocal() as session:
       # Use the session here
       pass
   ```
