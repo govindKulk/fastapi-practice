@@ -26,6 +26,13 @@ class UserCreate(UserBase):
             raise ValueError("Password must contain at least one digit")
         return v
 
+class UserUpdate(BaseModel):
+    """Model for updating an existing user - all fields optional"""
+    email: Optional[EmailStr] = None
+    full_name: Optional[str] = Field(None, max_length=100)
+    password: Optional[str] = Field(None, min_length=8, max_length=100)
+    is_active: Optional[bool] = None
+
 class UserResponse(UserBase):
     id: int
     is_active: bool
@@ -37,3 +44,7 @@ class UserResponse(UserBase):
 class UserLogin(BaseModel):
     username: str = Field(..., description="Unique username")
     password: str = Field(..., description="User password")
+    
+    @field_validator("username")
+    def validate_username(cls, v: str) -> str:
+        return v.lower()  # Convert to lowercase to match stored username

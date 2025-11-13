@@ -14,6 +14,14 @@ class ValidationError(HTTPException):
             detail=message
         )
 
+class AuthenticationError(HTTPException):
+    def __init__(self, message: str, status: int):
+        super().__init__(
+            status_code=status,
+            detail=message,
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
 class DuplicateError(HTTPException):
     def __init__(self, resource: str):
         super().__init__(
