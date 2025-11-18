@@ -4,7 +4,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.crud.task import task as crud_task
 from app.models.task import TaskCreate, TaskUpdate, TaskResponse, TaskPriority, TaskStatus
-from app.core.database import get_db
 from app.models.database import User
 from app.api import deps
 
@@ -12,7 +11,7 @@ router = APIRouter()
 
 @router.get("/", response_model=List[TaskResponse])
 async def read_tasks(
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(deps.get_db),
     skip: int = 0,
     limit: int = Query(default=100, le=100),
     priority: Optional[TaskPriority] = None,
@@ -30,7 +29,7 @@ async def read_tasks(
 @router.post("/", response_model=TaskResponse, status_code=201)
 async def create_task(
     *,
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(deps.get_db),
     task_in: TaskCreate,
     current_user: User = Depends(deps.get_current_active_user)
 ) -> Any:
@@ -43,7 +42,7 @@ async def create_task(
 @router.get("/{id}", response_model=TaskResponse)
 async def read_task(
     *,
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(deps.get_db),
     id: int,
     current_user: User = Depends(deps.get_current_active_user)
 ) -> Any:
@@ -61,7 +60,7 @@ async def read_task(
 @router.put("/{id}", response_model=TaskResponse)
 async def update_task(
     *,
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(deps.get_db),
     id: int,
     task_in: TaskUpdate,
     current_user: User = Depends(deps.get_current_active_user)
@@ -80,7 +79,7 @@ async def update_task(
 @router.delete("/{id}")
 async def delete_task(
     *,
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(deps.get_db),
     id: int,
     current_user: User = Depends(deps.get_current_active_user)
 ) -> Any:

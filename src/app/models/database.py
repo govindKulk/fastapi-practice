@@ -25,8 +25,9 @@ class Task(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String(100), nullable=False)
     description = Column(Text, nullable=True)
-    priority = Column(Enum(TaskPriority), default=TaskPriority.MEDIUM)
-    status = Column(Enum(TaskStatus), default=TaskStatus.PENDING)
+    # Use native_enum=False for SQLite compatibility in tests
+    priority = Column(Enum(TaskPriority, native_enum=False, length=20), default=TaskPriority.MEDIUM)
+    status = Column(Enum(TaskStatus, native_enum=False, length=20), default=TaskStatus.PENDING)
     due_date = Column(DateTime(timezone=True), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
